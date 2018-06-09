@@ -6,9 +6,9 @@ var lightwallet = require('eth-lightwallet');
 var txutils = lightwallet.txutils;
 const abiDecoder = require('abi-decoder');
 var BigNumber = require('bignumber.js');
-var PlayFab = require("playfab-sdk/Scripts/Playfab/PlayFab");
-var PlayFabServer = require("playfab-sdk/Scripts/Playfab/PlayFabServer");
-var PlayFabClient = require("playfab-sdk/Scripts/Playfab/PlayFabClient");
+var PlayFab = require("playfab-sdk/Scripts/PlayFab/PlayFab");
+var PlayFabServer = require("playfab-sdk/Scripts/PlayFab/PlayFabServer");
+var PlayFabClient = require("playfab-sdk/Scripts/PlayFab/PlayFabClient");
 var express = require('express');
 var app = express();
 var mySQL = require("mysql");
@@ -756,7 +756,7 @@ function queryDB(SQL, args, callback) {
 	var connection_config = {
 		host: process.env.DB_HOST,
 		user: "root",
-		password: DB_PASSWORD,
+		password: process.env.DB_PASSWORD,
 		database: "game"
 	};
 	
