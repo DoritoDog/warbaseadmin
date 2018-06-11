@@ -14,6 +14,7 @@ var app = express();
 var mySQL = require("mysql");
 var bodyParser = require('body-parser');
 var fs = require('fs');
+const LINQ = require('node-linq').LINQ;
 require('dotenv').load();
 
 app.use(bodyParser.json());
@@ -37,6 +38,10 @@ app.post('/', function(req, res) {
 	}
 
 	res.send('');
+});
+
+app.post('/giveDefault', function(req, res) {
+	giveDefaultItemsTo(req.body.playerId);
 });
 
 app.listen(app.get('port'), function() {
@@ -820,6 +825,17 @@ function validateReciept(req, warbasecoins) {
 			else
 				buyEther(request.address, productIdValues[productId]);
 		}
+	});
+}
+
+function giveDefaultItemsTo(playerId) {
+	var grantRequest = {
+		ItemIds: ['builder', 'unit', 'jet', 'light_tank', 'passenger_ship'],
+		PlayFabId: playerId
+	};
+
+	PlayFabServer.GrantItemsToUser(grantRequest, function(error, result) {
+		if (error) onPlayFabError(error);
 	});
 }
 
