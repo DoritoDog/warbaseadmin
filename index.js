@@ -44,6 +44,11 @@ app.post('/', function(req, res) {
 		const request = JSON.parse(req.body.marketBuyRequest);
 		purchaseMarketItem(request.Id, request.Address, request.PlayFabId);
 	}
+	else if (typeof(req.body.getSales) !== 'undefined' && req.body.getSales) {
+		queryDB("SELECT * FROM market_sales", [], sales => {
+			res.send(sales);
+		});
+	}
 
 	res.send('');
 });
@@ -925,8 +930,23 @@ function purchaseMarketItem(listingId, buyerAddress, buyerPlayFabId) {
 					if (error) onPlayFabError(error);
 					
 					// Delete the listing.
-					queryDB("DELETE FROM `listings` WHERE `id` = ?", [[[listingId]]], result => {
-						console.log(result);
+					var updateSql = "UPDATE `listings` SET `state` = 'Sold' WHERE `id` = ?";
+					queryDB(updateSql, [[[listingId]]], result => {
+
+						// Register the sale.
+						var insertSql = 'INSERT INTO `market_sales`(from_playfab_id, to_playfab_id, from_address, 					to_address, amount, item_id, listing_id) VALUES ?';
+						var args = [[
+							listing.playfab_id,
+							buyerPlayFabId,
+							buyerAddress,
+							listing.address,
+							web3.toHex(price),
+							listing.item_id,
+							listingId
+						]];
+						queryDB(insertSql, [args], result => {
+							console.log(result);
+						})
 					});
 				});
 			});
