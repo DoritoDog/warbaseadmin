@@ -44,13 +44,37 @@ app.post('/', function(req, res) {
 		const request = JSON.parse(req.body.marketBuyRequest);
 		purchaseMarketItem(request.Id, request.Address, request.PlayFabId);
 	}
-	else if (typeof(req.body.getSales) !== 'undefined' && req.body.getSales) {
-		queryDB("SELECT * FROM market_sales", [], sales => {
-			res.send(sales);
-		});
-	}
 
 	res.send('');
+});
+
+app.get('/getLastPrices', function(req, res) {
+	// For each listing this selects an ItemId and the last price it was sold for.
+	var selectSql = 'SELECT market_sales.item_id, (SELECT amount FROM market_sales ORDER BY completed DESC LIMIT 1) AS last_price FROM market_sales GROUP BY market_sales.item_id';
+
+	queryDB(selectSql, [], sales => {
+		res.send(sales);
+	});
+});
+
+app.get('/getListings', function(req, res) {
+	queryDB("SELECT * FROM listings", [], dbListings => {
+
+		// Format the listings into the C# class format.
+		var listings = [];
+		dbListings.forEach(listing => {
+			listings.push({
+				'Id': listing.id,
+				'InstanceId': listing.instance_id,
+				'ItemId': listing.item_id,
+				'Price': listing.price,
+				'PlayFabId': listing.playfab_id,
+				'Address': listing.address,
+			});
+		});
+
+		res.send(listings);
+	});
 });
 
 app.post('/giveDefault', function(req, res) {
@@ -908,7 +932,7 @@ function purchaseMarketItem(listingId, buyerAddress, buyerPlayFabId) {
 
 		// Transfer the tokens.
 		const allowance = contract.allowance(listing.address, accountAddress);
-		const price = web3.toBigNumber(web3.toWei(listing.price));
+		const price = new BigNumber(listing.price);
 		if (allowance.gte(price)) {
 			// The parameters are "from", "to", and "amount".
 			sendTx("transferFrom", [buyerAddress, listing.address, price]);
