@@ -57,6 +57,14 @@ app.get('/getLastPrices', function(req, res) {
 	});
 });
 
+app.get('/testHook', function(req, res) {
+	console.log(req.query);
+});
+
+app.post('/testHook', function(req, res) {
+	console.log(req.body);
+});
+
 app.get('/getListings', function(req, res) {
 	queryDB("SELECT * FROM listings", [], dbListings => {
 
