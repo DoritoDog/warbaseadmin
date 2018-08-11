@@ -57,12 +57,8 @@ app.get('/getLastPrices', function(req, res) {
 	});
 });
 
-app.get('/testHook', function(req, res) {
-	console.log("get hook get.");
-});
-
 app.post('/testHook', function(req, res) {
-	console.log("get hook post");
+	console.log(req);
 });
 
 app.get('/getListings', function(req, res) {
