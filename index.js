@@ -58,7 +58,8 @@ app.get('/getLastPrices', function(req, res) {
 });
 
 app.post('/testHook', function(req, res) {
-	console.log(req);
+	console.log(req.body);
+	console.log(JSON.stringify(req.body));
 });
 
 app.get('/getListings', function(req, res) {
