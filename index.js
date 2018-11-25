@@ -605,7 +605,7 @@ function validateReciept(req, warbasecoins) {
 
 function giveDefaultItemsTo(playerId) {
 	var grantRequest = {
-		ItemIds: ['builder', 'unit', 'jet', 'light_tank', 'passenger_ship'],
+		ItemIds: ['builder', 'unit', 'fighter_jet', 'light_tank', 'passenger_carrier'],
 		PlayFabId: playerId
 	};
 
