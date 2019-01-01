@@ -1,2 +1,2 @@
 # warbaseadmin
-The Node JS backend for the android app Warbase.
+The Node JS backend for the android app nBase.
